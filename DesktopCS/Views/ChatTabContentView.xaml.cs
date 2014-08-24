@@ -2,6 +2,7 @@
 using System.Windows.Data;
 using System.Windows.Documents;
 using DesktopCS.ViewModels;
+using System.Windows.Controls;
 
 namespace DesktopCS.Views
 {
@@ -10,6 +11,11 @@ namespace DesktopCS.Views
     /// </summary>
     public partial class ChatTabContentView
     {
+        public TextRange Selection
+        {
+            get { return this.ChatRichTextBox.Selection; }
+        }
+
         public ChatTabContentView(ChatTabContentViewModel vm)
         {
             this.InitializeComponent();
@@ -35,5 +41,9 @@ namespace DesktopCS.Views
             control.ChatRichTextBox.Document = control.Document;
         }
 
+        public void ScrollToEnd()
+        {
+            this.ChatScrollView.ScrollToEnd();
+        }
     }
 }

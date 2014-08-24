@@ -1,4 +1,5 @@
-﻿using DesktopCS.Models;
+﻿using DesktopCS.Helpers.Extensions;
+using DesktopCS.Models;
 using DesktopCS.Services;
 using DesktopCS.ViewModels;
 
@@ -24,11 +25,15 @@ namespace DesktopCS.Views
             if (windowGeometry.IsMaximized)
                 this.WindowState = System.Windows.WindowState.Maximized;
         } 
-        
-        //Keep the focus on InputTextBox all the time
+
         private void PreviewWindow_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            this.InputTextBox.Focus();
+            // Only focus on InputTextBox if there is no text selected, to allow events to be handled in ChatRichTextBox
+            MainViewModel vm = this.DataContext as MainViewModel;
+            if (vm.SelectedItem.Selection.IsEmpty)
+            {
+                this.InputTextBox.Focus();
+            }
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -45,6 +50,19 @@ namespace DesktopCS.Views
 
             //Save settings, specifically channels, when logging out
             SettingsManager.Value.Save(); 
+        }
+
+        private void Window_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            this.InputTextBox.Focus();
+        }
+
+        private void Window_StateChanged(object sender, System.EventArgs e)
+        {
+            if (this.WindowState != System.Windows.WindowState.Minimized)
+            {
+                WindowExtensions.StopFlashingWindow(this);
+            }
         }
     }
 }
